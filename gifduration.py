@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-This script takes an animated GIF file as input and calculates its total
-duration, or zero for non-animated GIF files.
+This script takes one or more animated GIF files as input and calculates their
+total durations, returning zero for non-animated GIF files.
 
 Requires the Python Imaging Library (PIL).
 
@@ -10,25 +10,65 @@ Code by Markus Amalthea Magnuson <markus.magnuson@gmail.com>
 """
 
 import sys
+import getopt
 import os.path
 import Image
 
 
-if (len(sys.argv) > 1):
-    path = sys.argv[1]
-else:
-    sys.exit("You must specify an input file as first argument.")
+help_message = '''
+Supply one or more animated GIF files as input to get their total durations.
+'''
 
-im = Image.open(path)
-durations = []
 
-try:
-    while 1:
-        durations.append(im.info["duration"])
-        im.seek(im.tell() + 1)
-except EOFError:
-    for index, duration in enumerate(durations):
-        print "Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0)
-    print "---"
-    total_duration = sum(durations)
-    print "Total duration of %s: %d ms (%0.2f seconds)" % (os.path.basename(path), total_duration, total_duration / 1000.0)
+class Usage(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    try:
+        try:
+            opts, args = getopt.getopt(argv[1:], "h:v", ["help", "verbose"])
+        except getopt.error, msg:
+            raise Usage(msg)
+
+        # Option processing.
+        verbose = False
+        for option, value in opts:
+            if option in ("-v", "--verbose"):
+                verbose = True
+            if option in ("-h", "--help"):
+                raise Usage(help_message)
+
+    except Usage, err:
+        print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
+        print >> sys.stderr, "\t for help use --help"
+        return 2
+
+    # Start processing the images.
+    for path in args:
+        try:
+            im = Image.open(path)
+        except IOError as (error_number, error_string):
+            print >> sys.stderr, path + ": " + str(error_string)
+            print "---"
+            continue
+
+        durations = []
+        try:
+            while 1:
+                durations.append(im.info["duration"])
+                im.seek(im.tell() + 1)
+        except EOFError:
+            print "%s:" % os.path.basename(path)
+            if verbose:
+                for index, duration in enumerate(durations):
+                    print "Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0)
+            total_duration = sum(durations)
+            print "Total duration: %d ms (%0.2f seconds)" % (total_duration, total_duration / 1000.0)
+            print "---"
+
+if __name__ == "__main__":
+    sys.exit(main())
