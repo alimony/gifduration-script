@@ -59,7 +59,10 @@ def main(argv=None):
         durations = []
         try:
             while 1:
-                durations.append(im.info["duration"])
+                try:
+                    durations.append(im.info["duration"])
+                except KeyError:
+                    raise EOFError
                 im.seek(im.tell() + 1)
         except EOFError:
             print "%s:" % os.path.basename(path)
