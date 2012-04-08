@@ -1,4 +1,0 @@
-This script takes an animated GIF file as input and calculates its total
-duration, or zero for non-animated GIF files.
-
-Requires the Python Imaging Library (PIL).

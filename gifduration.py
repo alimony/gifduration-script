@@ -51,9 +51,10 @@ def main(argv=None):
     for path in args:
         try:
             im = Image.open(path)
-        except IOError as (error_number, error_string):
-            print >> sys.stderr, path + ": " + str(error_string)
-            print "---"
+        except IOError, err:
+            print >> sys.stderr, "%s:" % os.path.basename(path)
+            print >> sys.stderr, err
+            print >> sys.stderr, "---"
             continue
 
         durations = []
@@ -66,11 +67,14 @@ def main(argv=None):
                 im.seek(im.tell() + 1)
         except EOFError:
             print "%s:" % os.path.basename(path)
-            if verbose:
-                for index, duration in enumerate(durations):
-                    print "Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0)
-            total_duration = sum(durations)
-            print "Total duration: %d ms (%0.2f seconds)" % (total_duration, total_duration / 1000.0)
+            if not durations:
+                print "Not a GIF image"
+            else:
+                if verbose:
+                    for index, duration in enumerate(durations):
+                        print "Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0)
+                total_duration = sum(durations)
+                print "Total duration: %d ms (%0.2f seconds)" % (total_duration, total_duration / 1000.0)
             print "---"
 
 if __name__ == "__main__":
