@@ -6,8 +6,9 @@ total durations, returning zero for non-animated GIF files.
 
 ## Requirements
 
-* [Python Imaging Library (PIL)](http://www.pythonware.com/products/pil/)
+* [Pillow](https://github.com/python-imaging/Pillow)
 
+Just run `pip install -r requirements.txt`, preferably outside a virtual environment if you want this script available system-wide.
 
 ## Installation
 
@@ -62,7 +63,7 @@ This will return something like:
     Total duration: 0 ms (0.00 seconds)
     ---
 
-GIF files that are not animated will return a duration of zero. All other file types will return the message "Not a GIF image".
+GIF files that are not animated will return a duration of zero. All other file types will return the message `Not a GIF image`.
 
 
 ## Website

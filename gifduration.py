@@ -12,7 +12,7 @@ Code by Markus Amalthea Magnuson <markus.magnuson@gmail.com>
 import sys
 import getopt
 import os.path
-import Image
+from PIL import Image, ImageSequence
 
 
 help_message = '''
@@ -58,24 +58,23 @@ def main(argv=None):
             continue
 
         durations = []
-        try:
-            while 1:
-                try:
-                    durations.append(im.info["duration"])
-                except KeyError:
-                    raise EOFError
-                im.seek(im.tell() + 1)
-        except EOFError:
-            print "%s:" % os.path.basename(path)
-            if not durations:
-                print "Not a GIF image"
-            else:
-                if verbose:
-                    for index, duration in enumerate(durations):
-                        print "Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0)
-                total_duration = sum(durations)
-                print "Total duration: %d ms (%0.2f seconds)" % (total_duration, total_duration / 1000.0)
-            print "---"
+        for frame in ImageSequence.Iterator(im):
+            try:
+                durations.append(frame.info['duration'])
+            except KeyError:
+                # Ignore if there was no duration, we will not count that frame.
+                pass
+
+        if not durations:
+            print "Not a GIF image"
+        else:
+            if verbose:
+                for index, duration in enumerate(durations):
+                    print "Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0)
+            total_duration = sum(durations)
+            print "Total duration: %d ms (%0.2f seconds)" % (total_duration, total_duration / 1000.0)
+
+        print "---"
 
 if __name__ == "__main__":
     sys.exit(main())
