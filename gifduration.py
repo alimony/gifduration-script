@@ -66,7 +66,7 @@ def main(argv=None):
                 pass
 
         if not durations:
-            print "Not a GIF image"
+            print "Not an animated GIF image"
         else:
             if verbose:
                 for index, duration in enumerate(durations):
