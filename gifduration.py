@@ -4,7 +4,7 @@
 This script takes one or more animated GIF files as input and calculates their
 total durations, returning zero for non-animated GIF files.
 
-Requires the Python Imaging Library (PIL).
+Requires Pillow, formerly known as the Python Imaging Library (PIL).
 
 Code by Markus Amalthea Magnuson <markus.magnuson@gmail.com>
 """
