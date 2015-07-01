@@ -9,6 +9,8 @@ Requires Pillow, formerly known as the Python Imaging Library (PIL).
 Code by Markus Amalthea Magnuson <markus.magnuson@gmail.com>
 """
 
+from __future__ import print_function
+
 import sys
 import getopt
 import os.path
@@ -31,8 +33,8 @@ def main(argv=None):
     try:
         try:
             opts, args = getopt.getopt(argv[1:], "h:v", ["help", "verbose"])
-        except getopt.error, msg:
-            raise Usage(msg)
+        except getopt.error as err:
+            raise Usage(err.msg)
 
         # Option processing.
         verbose = False
@@ -42,7 +44,7 @@ def main(argv=None):
             if option in ("-h", "--help"):
                 raise Usage(help_message)
 
-    except Usage, err:
+    except Usage as err:
         print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
         print >> sys.stderr, "\t for help use --help"
         return 2
@@ -51,7 +53,7 @@ def main(argv=None):
     for path in args:
         try:
             im = Image.open(path)
-        except IOError, err:
+        except IOError as err:
             print >> sys.stderr, "%s:" % os.path.basename(path)
             print >> sys.stderr, err
             print >> sys.stderr, "---"
@@ -66,15 +68,15 @@ def main(argv=None):
                 pass
 
         if not durations:
-            print "Not an animated GIF image"
+            print("Not an animated GIF image")
         else:
             if verbose:
                 for index, duration in enumerate(durations):
-                    print "Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0)
+                    print("Frame %d: %d ms (%0.2f seconds)" % (index + 1, duration, duration / 1000.0))
             total_duration = sum(durations)
-            print "Total duration: %d ms (%0.2f seconds)" % (total_duration, total_duration / 1000.0)
+            print("Total duration: %d ms (%0.2f seconds)" % (total_duration, total_duration / 1000.0))
 
-        print "---"
+        print("---")
 
 if __name__ == "__main__":
     sys.exit(main())
