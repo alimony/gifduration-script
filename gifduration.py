@@ -11,9 +11,10 @@ Code by Markus Amalthea Magnuson <markus.magnuson@gmail.com>
 
 from __future__ import print_function
 
-import sys
 import getopt
 import os.path
+import sys
+
 from PIL import Image, ImageSequence
 
 
@@ -45,8 +46,8 @@ def main(argv=None):
                 raise Usage(help_message)
 
     except Usage as err:
-        print >> sys.stderr, sys.argv[0].split('/')[-1] + ': ' + str(err.msg)
-        print >> sys.stderr, '\t for help use --help'
+        print(sys.argv[0].split('/')[-1] + ': ' + str(err.msg), file=sys.stderr)
+        print('\t for help use --help', file=sys.stderr)
         return 2
 
     # Start processing the images.
@@ -54,9 +55,9 @@ def main(argv=None):
         try:
             im = Image.open(path)
         except IOError as err:
-            print >> sys.stderr, '%s:' % os.path.basename(path)
-            print >> sys.stderr, err
-            print >> sys.stderr, '---'
+            print('%s:' % os.path.basename(path), file=sys.stderr)
+            print(err, file=sys.stderr)
+            print('---', file=sys.stderr)
             continue
 
         durations = []
@@ -77,6 +78,7 @@ def main(argv=None):
             print('Total duration: %d ms (%0.2f seconds)' % (total_duration, total_duration / 1000.0))
 
         print('---')
+
 
 if __name__ == '__main__':
     sys.exit(main())
