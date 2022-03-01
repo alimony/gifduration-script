@@ -68,4 +68,4 @@ GIF files that are not animated will return a duration of zero. All other file t
 
 ## Website
 
-Go [here](http://gifduration.konstochvanligasaker.se/) for a simple web service carrying out pretty much the same thing.
+Go [here](https://gifduration.herokuapp.com/) for a simple web service carrying out pretty much the same thing.
